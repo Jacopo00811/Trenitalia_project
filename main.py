@@ -22,6 +22,10 @@ for filename in os.listdir(pdf_directory):
             # Get the title of the PDF file
             title = reader.getDocumentInfo().title
             
+
+            # file.close() remember to close the file
+
+
             # Search for keywords in the PDF content
             found_keywords = []
             for page in reader.pages:
