@@ -6,7 +6,7 @@ words_to_filter = ['d\'', '-', 'a', 'e', 'o', 'il', 'lo', 'la', 'i', 'gli', 'l\'
 words_to_filter = [word.upper() for word in words_to_filter]
 
 filename_target = '00 - ELENCO DOCUMENTI_Cleaned.xlsx'
-filename_source = 'ZMAT 895 (4361-5053) - E401.xlsx'
+filename_source = 'MB_ZMAT 895 (4361-5053) - E401_ap3.xlsx'
 
 file_source = pd.read_excel(filename_source)
 file_target = pd.read_excel(filename_target)

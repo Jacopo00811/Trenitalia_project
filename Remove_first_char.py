@@ -7,4 +7,4 @@ df = pd.read_excel('00 - ELENCO DOCUMENTI.xlsx')
 df['TITOLO DOCUMENTO'] = df['TITOLO DOCUMENTO'].str[1:]
 
 # Save the modified DataFrame to a new Excel file
-df.to_excel('00 - ELENCO DOCUMENTI_A.xlsx', index=False)
+df.to_excel('name.xlsx', index=False)
