@@ -1,43 +1,45 @@
-# import pandas as pd
-# import os
-# import csv
-# import PyPDF2
-# import pandas as pd
+import pandas as pd
 
-# # Define the keywords and PDF directory
-# keywords = ['keyword1', 'keyword2', 'keyword3']
-# pdf_directory = 'path/to/pdf/files'
+words_to_filter = ['d\'', '-', 'a', 'e', 'o', 'il', 'lo', 'la', 'i', 'gli', 'l\'', 'le', 'un', 'un\'', 'uno', 'una', 'dei', 'degli',
+                   'delle', 'a', 'da', 'di', 'in', 'con', 'su', 'per', 'tra', 'fra', 'del', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
-# # # Create a DataFrame to store the results
-# # data = pd.DataFrame(columns=keywords)
+words_to_filter = [word.upper() for word in words_to_filter]
 
-# # Iterate through the PDF files in the directory
-# for filename in os.listdir(pdf_directory):
-#     if filename.endswith('.pdf'):
-#         pdf_path = os.path.join(pdf_directory, filename)
-#         with open(pdf_path, 'rb') as file:
-#             reader = PyPDF2.PdfReader(file)
-#             # Get the title of the PDF file
-#             title = reader.getDocumentInfo().title
-            
+filename_target = '00 - ELENCO DOCUMENTI_Cleaned.xlsx'
+filename_source = 'ZMAT 895 (4361-5053) - E401.xlsx'
 
-#             # file.close() remember to close the file
+file_source = pd.read_excel(filename_source)
+file_target = pd.read_excel(filename_target)
 
+descriptions = file_source['Descrizione'].tolist()
 
-#             # Search for keywords in the PDF content
-#             found_keywords = []
-#             for page in reader.pages:
-#                 text = page.extract_text().lower()
-#                 for keyword in keywords:
-#                     if keyword.lower() in text:
-#                         found_keywords.append(keyword)
-            
-#             # Add the found keywords to the DataFrame
-#             data.loc[title] = [keyword in found_keywords for keyword in keywords]
+filtered_descriptions = []
 
-# # Save the DataFrame to a CSV file
-# data.to_csv('output.csv')
+for phrase in descriptions:
+    words = phrase.split()
+    filtered_words = [word for word in words if word not in words_to_filter]
+    filtered_phrase = ' '.join(filtered_words)
+    filtered_descriptions.append(filtered_phrase)
+
+file_source['Descrizione'] = filtered_descriptions
+
+documents_codes = file_target['CODICE DOCUMENTO'].tolist()
+documents_titles = file_target['TITOLO DOCUMENTO'].tolist()
 
 
+file_source['Codici Documenti'] = ''
+for phrase in file_source['Descrizione'].tolist():
+    matching_codes = []
+    for word in phrase.split():
+        for title in documents_titles:
+            for word_title in title.split():
+                if word == word_title:
+                    matching_codes.append(file_target.at[documents_titles.index(title), 'CODICE DOCUMENTO'])
+
+    index = file_source['Descrizione'].tolist().index(phrase)
+    file_source.at[index, 'Codici Documenti'] = '; '.join(matching_codes)
 
 
+
+file_source.to_excel('output.xlsx', index=False) 
+print("File saved successfully!")
